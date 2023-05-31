@@ -45,6 +45,7 @@ export class Boss extends Subject {
 export class StockObserver extends Observer {
   private name: string
   private bossName: string
+  public index: number
 
   constructor(name: string, bossName: string) {
     super()

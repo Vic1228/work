@@ -15,15 +15,13 @@
 
 <script setup lang="ts">
 import { Boss, StockObserver } from "@/models/ObserverPattern";
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import type { Ref } from 'vue'
 
 const addName: Ref<string> = ref("Vic")
 const employeeList: Ref<any[]> = ref([])
 
 const boss = new Boss("胡汗衫");
-
-// boss.remove(newObserver); // 移除觀察者
 
 // -- method -- //
 //* 新增
