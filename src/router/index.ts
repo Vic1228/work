@@ -58,6 +58,16 @@ const router = createRouter({
       path: '/StatePattern',
       name: 'StatePattern',
       component: () => import('@/views/StatePattern.vue')
+    },
+    {
+      path: '/AdapterPattern',
+      name: 'AdapterPattern',
+      component: () => import('@/views/AdapterPattern.vue')
+    },
+    {
+      path: '/MementoPattern',
+      name: 'MementoPattern',
+      component: () => import('@/views/MementoPattern.vue')
     }
   ]
 })

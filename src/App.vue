@@ -22,6 +22,8 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/BuilderPattern">建造者模式</RouterLink>
         <RouterLink to="/ObserverPattern">觀察者模式</RouterLink>
         <RouterLink to="/StatePattern">狀態模式</RouterLink>
+        <RouterLink to="/AdapterPattern">轉接器模式</RouterLink>
+        <RouterLink to="/MementoPattern">備忘錄模式</RouterLink>
       </nav>
     </div>
   </header>
