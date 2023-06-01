@@ -53,6 +53,11 @@ const router = createRouter({
       path: '/ObserverPattern',
       name: 'ObserverPattern',
       component: () => import('@/views/ObserverPattern.vue')
+    },
+    {
+      path: '/StatePattern',
+      name: 'StatePattern',
+      component: () => import('@/views/StatePattern.vue')
     }
   ]
 })

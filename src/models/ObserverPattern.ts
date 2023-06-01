@@ -49,6 +49,7 @@ export class StockObserver extends Observer {
 
   constructor(name: string, bossName: string) {
     super()
+    this.index = 0
     this.name = name
     this.bossName = bossName
   }
