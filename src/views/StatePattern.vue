@@ -21,13 +21,16 @@ import type { Ref } from 'vue'
 const messageDisplay: Ref<string> = ref("")
 const emergencyProjects = new Work()
 
+const nowState: Ref<number> = ref(9)
+
 // -- method -- //
 function StartToWork() {
-  emergencyProjects.State = 9
+  emergencyProjects.setState(nowState.value)
   const start = setInterval(() => {
     const message = emergencyProjects.WriteProgram()
     messageDisplay.value = message
-    emergencyProjects.State++
+    nowState.value++
+    emergencyProjects.setState(nowState.value)
     if (emergencyProjects.State > 22) {
       clearInterval(start)
     }

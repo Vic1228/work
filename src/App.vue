@@ -25,6 +25,10 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/AdapterPattern">轉接器模式</RouterLink>
         <RouterLink to="/MementoPattern">備忘錄模式</RouterLink>
         <RouterLink to="/CompositePattern">組合模式</RouterLink>
+        <RouterLink to="/SingletonPattern">獨體模式</RouterLink>
+        <RouterLink to="/BridgePattern">橋接模式</RouterLink>
+        <RouterLink to="/ChainOfResponsibilityPattern">職責鏈模式</RouterLink>
+        <RouterLink to="/FlyweightPattern">享元模式</RouterLink>
       </nav>
     </div>
   </header>
@@ -59,14 +63,13 @@ nav a.router-link-exact-active:hover {
 }
 
 nav a {
+  width: 50%;
   display: inline-block;
   padding: 0 1rem;
   border-left: 1px solid var(--color-border);
 }
 
-nav a:first-of-type {
-  border: 0;
-}
+
 
 @media (min-width: 1024px) {
   header {

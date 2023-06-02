@@ -73,6 +73,26 @@ const router = createRouter({
       path: '/CompositePattern',
       name: 'CompositePattern',
       component: () => import('@/views/CompositePattern.vue')
+    },
+    {
+      path: '/SingletonPattern',
+      name: 'SingletonPattern',
+      component: () => import('@/views/SingletonPattern.vue')
+    },
+    {
+      path: '/BridgePattern',
+      name: 'BridgePattern',
+      component: () => import('@/views/BridgePattern.vue')
+    },
+    {
+      path: '/ChainOfResponsibilityPattern',
+      name: 'ChainOfResponsibilityPattern',
+      component: () => import('@/views/ChainOfResponsibilityPattern.vue')
+    },
+    {
+      path: '/FlyweightPattern',
+      name: 'FlyweightPattern',
+      component: () => import('@/views/FlyweightPattern.vue')
     }
   ]
 })

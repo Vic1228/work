@@ -23,12 +23,16 @@ export class GameCharacter {
 
   public Fight() {
     console.log('戰鬥開始')
-    console.log('血量從' + this.vit + '變成了' + Math.floor(Math.random() * 100))
-    this.vit = 5
-    console.log('力量從' + this.str + '變成了' + Math.floor(Math.random() * 100))
-    this.str = 9
-    console.log('智力從' + this.int + '變成了' + Math.floor(Math.random() * 100))
-    this.int = 7
+    const oldVit = this.vit
+    const oldStr = this.str
+    const oldInt = this.int
+    const multiple = 100
+    this.vit = Math.floor(Math.random() * multiple)
+    this.str = Math.floor(Math.random() * multiple)
+    this.int = Math.floor(Math.random() * multiple)
+    console.log('血量從' + oldVit + '變成了' + this.vit)
+    console.log('力量從' + oldStr + '變成了' + this.str)
+    console.log('智力從' + oldInt + '變成了' + this.int)
   }
 
   public SaveState() {

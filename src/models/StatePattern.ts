@@ -56,7 +56,8 @@ export class Work {
     }
   }
 
-  public WriteProgram(): string {
+  public setState(state: number): void {
+    this.State = state
     switch (true) {
       case this.State < 12:
         this.currentState = this.StateList.ForenoonState
@@ -77,6 +78,9 @@ export class Work {
       default:
         this.currentState = this.StateList.SleepingState
     }
+  }
+
+  public WriteProgram(): string {
     return this.currentState.WriteProgram(this)
   }
 }
