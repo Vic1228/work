@@ -64,7 +64,6 @@ function cloneResume() {
 </script>
 
 <style>
-
 input {
   margin: 7px 0
 }

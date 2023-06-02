@@ -68,6 +68,11 @@ const router = createRouter({
       path: '/MementoPattern',
       name: 'MementoPattern',
       component: () => import('@/views/MementoPattern.vue')
+    },
+    {
+      path: '/CompositePattern',
+      name: 'CompositePattern',
+      component: () => import('@/views/CompositePattern.vue')
     }
   ]
 })
