@@ -1,4 +1,4 @@
-//* 女生
+// 女孩
 export class SchoolGirl {
   public name: string
 
@@ -7,44 +7,53 @@ export class SchoolGirl {
   }
 }
 
-//* 追求者
-class Pursuit {
-  public mm: SchoolGirl
+// 抽象追求者
+abstract class Pursuer {
+  abstract giveDolls(): void
+  abstract giveFlowers(): void
+  abstract givePig(): void
+}
 
-  constructor(mm: SchoolGirl) {
-    this.mm = mm
+// 追求者
+class RealPursuer extends Pursuer {
+  public girl: SchoolGirl
+
+  constructor(girl: SchoolGirl) {
+    super()
+    this.girl = girl
   }
 
   public giveDolls(): void {
-    console.log(this.mm.name + '送你洋娃娃')
+    console.log(this.girl.name + '送你洋娃娃')
   }
 
   public giveFlowers(): void {
-    console.log(this.mm.name + '送你狗')
+    console.log(this.girl.name + '送你花')
   }
 
   public givePig(): void {
-    console.log(this.mm.name + '送你豬')
+    console.log(this.girl.name + '送你寵物')
   }
 }
 
-//* 代理者
-export class Proxy {
-  public gg: Pursuit
+// 代理者
+export class Proxy extends Pursuer {
+  private man: Pursuer
 
-  constructor(mm: SchoolGirl) {
-    this.gg = new Pursuit(mm)
+  constructor(girl: SchoolGirl) {
+    super()
+    this.man = new RealPursuer(girl)
   }
 
   public giveDolls(): void {
-    this.gg.giveDolls()
+    this.man.giveDolls()
   }
 
   public giveFlowers(): void {
-    this.gg.giveFlowers()
+    this.man.giveFlowers()
   }
 
   public givePig(): void {
-    this.gg.givePig()
+    this.man.givePig()
   }
 }

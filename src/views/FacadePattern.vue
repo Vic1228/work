@@ -7,7 +7,7 @@
     <div class="transactionRecords">
       <div v-for="(ele, idx) in transactionRecords" :key="idx">
         <p>{{ ele.date }}</p>
-        <p>{{ ele.content.toString() }}</p>
+        <p>{{ ele.content }}</p>
       </div>
     </div>
   </div>
@@ -46,7 +46,6 @@ function sellStock(): void {
 </script>
 
 <style>
-
 input {
   margin: 7px 0
 }

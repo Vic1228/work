@@ -8,23 +8,12 @@
 <script setup lang="ts">
 import { Proxy, SchoolGirl } from "@/models/ProxyPattern";
 
-calc()
-
-// -- method -- //
-function calc(): void {
-  try {
-    const mm = new SchoolGirl("阿美");
-    const proxy = new Proxy(mm);
-    proxy.giveDolls()
-    proxy.giveFlowers()
-    proxy.givePig()
-  } catch (e) {
-    alert(e)
-    return
-  }
-}
+const girl = new SchoolGirl("阿美");
+const proxy = new Proxy(girl);
+proxy.giveDolls()
+proxy.giveFlowers()
+proxy.givePig()
 
 </script>
 
-<style>
-</style>
+<style></style>

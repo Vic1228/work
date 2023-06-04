@@ -1,4 +1,4 @@
-class RequestItem {
+export class RequestItem {
   public RequestType: string
   public RequestContent: string
   public Number: number
@@ -19,7 +19,7 @@ abstract class Manager {
     this.name = name
     this.superior = null
   }
-
+  // 設定主管
   public SetSuperior(superior: Manager): void {
     this.superior = superior
   }
@@ -28,9 +28,9 @@ abstract class Manager {
 }
 
 //* 經理
-class CommonManager extends Manager {
+export class CommonManager extends Manager {
   public RequestApplication(request: RequestItem): void {
-    if (request.RequestType === '加薪' && request.Number <= 500) {
+    if (request.RequestType === '請假' && request.Number <= 2) {
       console.log(`${this.name} : ${request.RequestContent} 數量${request.Number} 被批准`)
     } else {
       if (this.superior !== null) {
@@ -41,9 +41,9 @@ class CommonManager extends Manager {
 }
 
 //* 總監
-class Majordomo extends Manager {
+export class Majordomo extends Manager {
   public RequestApplication(request: RequestItem): void {
-    if (request.RequestType === '加薪' && request.Number <= 1000) {
+    if (request.RequestType === '請假' && request.Number <= 5) {
       console.log(`${this.name} : ${request.RequestContent} 數量${request.Number} 被批准`)
     } else {
       if (this.superior !== null) {
@@ -54,7 +54,7 @@ class Majordomo extends Manager {
 }
 
 //* 總經理
-class GeneralManager extends Manager {
+export class GeneralManager extends Manager {
   public RequestApplication(request: RequestItem): void {
     if (request.RequestType === '請假') {
       console.log(`${this.name} : ${request.RequestContent} 數量${request.Number} 被批准`)
@@ -63,22 +63,5 @@ class GeneralManager extends Manager {
     } else if (request.RequestType === '加薪' && request.Number > 500) {
       console.log(`${this.name} : ${request.RequestContent} 數量${request.Number} 再說吧`)
     }
-  }
-}
-
-export class Program {
-  static Main(): void {
-    const commonManager = new CommonManager('經理')
-    const majordomo = new Majordomo('總監')
-    const generalManager = new GeneralManager('總經理')
-
-    commonManager.SetSuperior(majordomo)
-    majordomo.SetSuperior(generalManager)
-
-    const request1 = new RequestItem('加薪', '要求加薪', 50)
-    commonManager.RequestApplication(request1)
-
-    const request2 = new RequestItem('請假', '要求請假', 90)
-    commonManager.RequestApplication(request2)
   }
 }

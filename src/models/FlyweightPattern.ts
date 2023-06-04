@@ -1,36 +1,47 @@
+//* 用戶物件
 export class User {
-  name: string
+  private name: string = ''
 
   constructor(name: string) {
     this.name = name
   }
-}
 
-class WebSite {
-  category: string
-
-  constructor(category: string) {
-    this.category = category
-  }
-
-  use(user: User): void {
-    console.log(`${user.name} 使用 ${this.category} 網站`)
+  public getName(): string {
+    return this.name
   }
 }
 
+//* 抽象網站
+abstract class WebSite {
+  abstract use(user: User): void
+}
+
+//* 實體網站
+class ConcreteWebSite extends WebSite {
+  private type: string = ''
+
+  constructor(type: string) {
+    super()
+    this.type = type
+  }
+
+  public use(user: User): void {
+    console.log(`用戶：${user.getName()}、網站分類：${this.type}`)
+  }
+}
+
+//* 網站工廠
 export class WebSiteFactory {
-  private websites: { [category: string]: WebSite } = {}
+  private pool: { [key: string]: WebSite } = {}
 
-  getWebSiteCategory(category: string): WebSite {
-    if (!this.websites[category]) {
-      this.websites[category] = new WebSite(category)
+  public getWebSiteCategory(type: string): WebSite {
+    if (!this.pool[type]) {
+      this.pool[type] = new ConcreteWebSite(type)
     }
-    return this.websites[category]
+    return this.pool[type]
   }
 
-  getWebSiteCount(): number {
-    return Object.keys(this.websites).length
+  public getWebSiteCount(): number {
+    return Object.keys(this.pool).length
   }
 }
-
-

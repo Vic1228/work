@@ -5,9 +5,19 @@
 </template>
 
 <script setup lang="ts">
-import { Program } from "@/models/BridgePattern";
+import { HandsetBrandN, HandsetBrandM, HandsetGame, HandsetAddressList } from "@/models/BridgePattern";
 
-Program.Main()
+const brandN = new HandsetBrandN()
+const brandM = new HandsetBrandM()
+
+brandN.SetHandsetSoft(new HandsetGame())
+brandN.Run()
+brandM.SetHandsetSoft(new HandsetGame())
+brandM.Run()
+brandN.SetHandsetSoft(new HandsetAddressList())
+brandN.Run()
+brandM.SetHandsetSoft(new HandsetAddressList())
+brandM.Run()
 
 
 </script>
