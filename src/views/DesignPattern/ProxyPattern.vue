@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { Proxy, SchoolGirl } from "@/models/ProxyPattern";
+import { Proxy, SchoolGirl } from "@/models/DesignPattern/ProxyPattern.js";
 
 const girl = new SchoolGirl("阿美");
 const proxy = new Proxy(girl);

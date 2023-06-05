@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { GameCharacter, RoleStateCareTaker } from "@/models/MementoPattern";
+import { GameCharacter, RoleStateCareTaker } from "@/models/DesignPattern/MementoPattern.js";
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 

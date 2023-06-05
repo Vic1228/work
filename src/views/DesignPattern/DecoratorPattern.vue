@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import * as DecoratorPattern from "@/models/DecoratorPattern";
+import * as DecoratorPattern from "@/models/DesignPattern/DecoratorPattern.js";
 import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
 

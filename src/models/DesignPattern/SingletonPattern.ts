@@ -1,3 +1,4 @@
+//* 獨體物件
 export class Singleton {
   private static instance: Singleton
 

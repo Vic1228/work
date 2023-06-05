@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { ConcreteCompany, HRDepartment, FinanceDepartment } from "@/models/CompositePattern";
+import { ConcreteCompany, HRDepartment, FinanceDepartment } from "@/models/DesignPattern/CompositePattern.js";
 
 const root = new ConcreteCompany('北京總公司')
 root.Add(new HRDepartment('總公司人力資源部'))

@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { HandsetBrandN, HandsetBrandM, HandsetGame, HandsetAddressList } from "@/models/BridgePattern";
+import { HandsetBrandN, HandsetBrandM, HandsetGame, HandsetAddressList } from "@/models/DesignPattern/BridgePattern.js";
 
 const brandN = new HandsetBrandN()
 const brandM = new HandsetBrandM()

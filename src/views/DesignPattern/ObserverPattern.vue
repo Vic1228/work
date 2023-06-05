@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { Boss, StockObserver } from "@/models/ObserverPattern";
+import { Boss, StockObserver } from "@/models/DesignPattern/ObserverPattern.js";
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 

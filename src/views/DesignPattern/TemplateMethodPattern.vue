@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { Program } from "@/models/TemplateMethodPattern";
+import { Program } from "@/models/DesignPattern/TemplateMethodPattern.js";
 
 const program = new Program()
 program.Main()

@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { StockTradingProgram } from "@/models/FacadePattern";
+import { StockTradingProgram } from "@/models/DesignPattern/FacadePattern.js";
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 

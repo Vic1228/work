@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import SimpleFactor from '@/views/SimpleFactor.vue'
+import SimpleFactor from '@/views/DesignPattern/SimpleFactor.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,88 +12,93 @@ const router = createRouter({
     {
       path: '/StrategyPattern',
       name: 'StrategyPattern',
-      component: () => import('@/views/StrategyPattern.vue')
+      component: () => import('@/views/DesignPattern/StrategyPattern.vue')
     },
     {
       path: '/DecoratorPattern',
       name: 'DecoratorPattern',
-      component: () => import('@/views/DecoratorPattern.vue')
+      component: () => import('@/views/DesignPattern/DecoratorPattern.vue')
     },
     {
       path: '/ProxyPattern',
       name: 'ProxyPattern',
-      component: () => import('@/views/ProxyPattern.vue')
+      component: () => import('@/views/DesignPattern/ProxyPattern.vue')
     },
     {
       path: '/FactoryMethod',
       name: 'FactoryMethod',
-      component: () => import('@/views/FactoryMethod.vue')
+      component: () => import('@/views/DesignPattern/FactoryMethod.vue')
     },
     {
       path: '/PrototypePattern',
       name: 'PrototypePattern',
-      component: () => import('@/views/PrototypePattern.vue')
+      component: () => import('@/views/DesignPattern/PrototypePattern.vue')
     },
     {
       path: '/TemplateMethodPattern',
       name: 'TemplateMethodPattern',
-      component: () => import('@/views/TemplateMethodPattern.vue')
+      component: () => import('@/views/DesignPattern/TemplateMethodPattern.vue')
     },
     {
       path: '/FacadePattern',
       name: 'FacadePattern',
-      component: () => import('@/views/FacadePattern.vue')
+      component: () => import('@/views/DesignPattern/FacadePattern.vue')
     },
     {
       path: '/BuilderPattern',
       name: 'BuilderPattern',
-      component: () => import('@/views/BuilderPattern.vue')
+      component: () => import('@/views/DesignPattern/BuilderPattern.vue')
     },
     {
       path: '/ObserverPattern',
       name: 'ObserverPattern',
-      component: () => import('@/views/ObserverPattern.vue')
+      component: () => import('@/views/DesignPattern/ObserverPattern.vue')
     },
     {
       path: '/StatePattern',
       name: 'StatePattern',
-      component: () => import('@/views/StatePattern.vue')
+      component: () => import('@/views/DesignPattern/StatePattern.vue')
     },
     {
       path: '/AdapterPattern',
       name: 'AdapterPattern',
-      component: () => import('@/views/AdapterPattern.vue')
+      component: () => import('@/views/DesignPattern/AdapterPattern.vue')
     },
     {
       path: '/MementoPattern',
       name: 'MementoPattern',
-      component: () => import('@/views/MementoPattern.vue')
+      component: () => import('@/views/DesignPattern/MementoPattern.vue')
     },
     {
       path: '/CompositePattern',
       name: 'CompositePattern',
-      component: () => import('@/views/CompositePattern.vue')
+      component: () => import('@/views/DesignPattern/CompositePattern.vue')
     },
     {
       path: '/SingletonPattern',
       name: 'SingletonPattern',
-      component: () => import('@/views/SingletonPattern.vue')
+      component: () => import('@/views/DesignPattern/SingletonPattern.vue')
     },
     {
       path: '/BridgePattern',
       name: 'BridgePattern',
-      component: () => import('@/views/BridgePattern.vue')
+      component: () => import('@/views/DesignPattern/BridgePattern.vue')
     },
     {
       path: '/ChainOfResponsibilityPattern',
       name: 'ChainOfResponsibilityPattern',
-      component: () => import('@/views/ChainOfResponsibilityPattern.vue')
+      component: () => import('@/views/DesignPattern/ChainOfResponsibilityPattern.vue')
     },
     {
       path: '/FlyweightPattern',
       name: 'FlyweightPattern',
-      component: () => import('@/views/FlyweightPattern.vue')
-    }
+      component: () => import('@/views/DesignPattern/FlyweightPattern.vue')
+    },
+    {
+      path: '/TowerDefense',
+      name: 'TowerDefense',
+      component: () => import('@/views/TowerDefense/TowerDefense.vue')
+    },
   ]
 })
 

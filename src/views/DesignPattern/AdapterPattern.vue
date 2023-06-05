@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { Forwards, Translator } from "@/models/AdapterPattern";
+import { Forwards, Translator } from "@/models/DesignPattern/AdapterPattern.js";
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 

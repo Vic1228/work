@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { CommonManager, Majordomo, GeneralManager, RequestItem } from "@/models/ChainOfResponsibilityPattern";
+import { CommonManager, Majordomo, GeneralManager, RequestItem } from "@/models/DesignPattern/ChainOfResponsibilityPattern.js";
 
 const commonManager = new CommonManager('經理')
 const majordomo = new Majordomo('總監')

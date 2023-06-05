@@ -1,14 +1,14 @@
-// 抽象公司
+//* 抽象公司
 abstract class Company {
-  constructor(protected name: string) {}
+  constructor(public name: string) {}
 
-  public Add(company: Company): void {}
+  abstract Add(company: Company): void
 
-  public Remove(company: Company): void {}
+  abstract Remove(company: Company): void
 
-  public Display(depth: number): void {}
+  abstract Display(depth: number): void
 
-  public LineOfDuty(): void {}
+  abstract LineOfDuty(): void
 }
 
 //* 公司
@@ -50,6 +50,9 @@ export class HRDepartment extends Company {
     super(name)
   }
 
+  public Add(): void {}
+  public Remove(): void {}
+
   public Display(depth: number): void {
     console.log('-'.repeat(depth) + this.name)
   }
@@ -64,6 +67,9 @@ export class FinanceDepartment extends Company {
   constructor(name: string) {
     super(name)
   }
+
+  public Add(): void {}
+  public Remove(): void {}
 
   public Display(depth: number): void {
     console.log('-'.repeat(depth) + this.name)

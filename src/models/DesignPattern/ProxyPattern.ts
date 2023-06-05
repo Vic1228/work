@@ -24,15 +24,15 @@ class RealPursuer extends Pursuer {
   }
 
   public giveDolls(): void {
-    console.log(this.girl.name + '送你洋娃娃')
+    console.log(this.girl.name + '：我要送你洋娃娃')
   }
 
   public giveFlowers(): void {
-    console.log(this.girl.name + '送你花')
+    console.log(this.girl.name + '：我要送你花')
   }
 
   public givePig(): void {
-    console.log(this.girl.name + '送你寵物')
+    console.log(this.girl.name + '：我要送你寵物')
   }
 }
 

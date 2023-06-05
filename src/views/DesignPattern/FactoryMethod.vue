@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { FactoryManager } from "@/models/FactoryMethod";
+import { FactoryManager } from "@/models/DesignPattern/FactoryMethod.js";
 
 // -- method -- //
 function callFactory(factoryName: string): void {

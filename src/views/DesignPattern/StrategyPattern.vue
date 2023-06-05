@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { PricingStrategyFactory } from "@/models/StrategyPattern";
+import { PricingStrategyFactory } from "@/models/DesignPattern/StrategyPattern.js";
 import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
 

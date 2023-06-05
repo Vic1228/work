@@ -29,6 +29,7 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/BridgePattern">橋接模式</RouterLink>
         <RouterLink to="/ChainOfResponsibilityPattern">職責鏈模式</RouterLink>
         <RouterLink to="/FlyweightPattern">享元模式</RouterLink>
+        <RouterLink to="/TowerDefense">塔防遊戲</RouterLink>
       </nav>
     </div>
   </header>

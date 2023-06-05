@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { Singleton } from "@/models/SingletonPattern";
+import { Singleton } from "@/models/DesignPattern/SingletonPattern.js";
 
 const s1 = Singleton.GetInstance()
 const s2 = Singleton.GetInstance()

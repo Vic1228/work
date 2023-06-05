@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { Resume } from "@/models/PrototypePattern";
+import { Resume } from "@/models/DesignPattern/PrototypePattern.js";
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 

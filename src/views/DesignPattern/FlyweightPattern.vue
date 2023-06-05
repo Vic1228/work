@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { WebSiteFactory, User } from "@/models/FlyweightPattern";
+import { WebSiteFactory, User } from "@/models/DesignPattern/FlyweightPattern.js";
 
 
 const factory = new WebSiteFactory()

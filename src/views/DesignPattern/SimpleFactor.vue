@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { OperationFactory } from "@/models/SimpleFactor";
+import { OperationFactory } from "@/models/DesignPattern/SimpleFactor.js";
 import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
 

@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { Work } from "@/models/StatePattern";
+import { Work } from "@/models/DesignPattern/StatePattern.js";
 import { ref } from 'vue'
 import type { Ref } from 'vue'
 
