@@ -1,10 +1,10 @@
 //* 抽象怪物
 abstract class Monster {
-  public location: number = 1
-
   abstract speed: number
   abstract HP: number
   abstract move(): void
+
+  location: number = 1
 
   setLocation(location: number): void {
     this.location = location
@@ -24,10 +24,6 @@ class ConcreteMonster extends Monster {
 
   move(): void {
     console.log('怪物移動時執行什麼？')
-  }
-
-  setLocation(location: number): void {
-    this.location = location
   }
 }
 
@@ -103,6 +99,11 @@ export class MonsterGenerator {
 
   // 取得目前怪物清單
   getMonsterList(): Monster[] {
-    return this.monsterList
+    return this.monsterList.map((monster) => {
+      return {
+        ...monster,
+        location: monster.location
+      }
+    })
   }
 }

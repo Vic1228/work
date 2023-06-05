@@ -31,10 +31,10 @@ const monsterGenerator = new MonsterGenerator()
 const monsterObserver = {
   onMonsterMoved: (monster: Monster) => {
     console.log(monsterGenerator.getMonsterList())
-    console.log(`怪物 ${monster.HP} 移動了`)
+    console.log(`怪物 ${monster.location} 移動了`)
   },
   onMonsterCreated: (monster: Monster) => {
-    console.log(`創建了一個新怪物 ${monster.HP}`)
+    console.log(`創建了一個新怪物 ${monster.location}`)
   }
 }
 
@@ -42,7 +42,7 @@ monsterGenerator.addObserver(monsterObserver)
 
 const monster = monsterGenerator.generateMonster(1, 100)
 const monster2 = monsterGenerator.generateMonster(1, 100)
-monsterGenerator.moveMonster(monster, 1)
+monsterGenerator.moveMonster(monster, 16)
 monsterGenerator.moveMonster(monster2, 9)
 
 
