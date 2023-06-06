@@ -1,5 +1,5 @@
 // 抽象怪物
-abstract class Monster {
+export abstract class Monster {
   abstract speed: number
   abstract HP: number
   abstract move(): void
@@ -35,7 +35,7 @@ class MonsterFlyweightFactory {
 }
 
 // 抽象觀察者接口
-abstract class MonsterObserver {
+export abstract class MonsterObserver {
   abstract onMonsterCreated(monster: Monster, location: number): void // 怪物創建時觸發
   abstract onMonsterMoved(): void // 怪物移動時觸發
   abstract onMonsterExceededThreshold(): void // 怪物位置超過後觸發
@@ -65,24 +65,61 @@ export class MonsterGenerator {
   }
 
   // 建造怪物 / 調用怪物創建通知方法
-  generateMonster(speed: number, HP: number, location: number): Monster {
+  generateMonster(speed: number, HP: number, location: number, nowHP: number): Monster {
     const monster = this.monsterFactory.createMonster(speed, HP)
-    this.monsterList.push({ monster, location }) // 將創建的怪物及位置添加到怪物列表中
-    this.notifyOnMonsterCreated(monster, location)
+    this.monsterList.push({ monster, location, nowHP }) // 將創建的怪物及位置添加到怪物列表中
+    this.notifyOnMonsterCreated(monster, location, nowHP)
     return monster
   }
 
   // 怪物移動 / 調用怪物移動通知方法
-  moveMonster(): void {
+  // 在 moveMonster 方法中使用攻擊速度
+  moveMonster(towerList: any): void {
     this.monsterList.forEach((data, index) => {
       data.location += data.monster.speed
 
       if (data.location > 530) {
         // 超過範圍，執行相應操作
         this.handleMonsterExceededThreshold(data.monster, index)
+      } else {
+        const monsterX = data.location
+        towerList.forEach((tower: any, towerIndex: number) => {
+          if (!tower.tower) {
+            return
+          }
+          const attackRangeStart = towerIndex * 88 // 計算攻擊範圍的起始位置
+          const attackRangeEnd = (towerIndex + 1) * 88 // 計算攻擊範圍的結束位置
+          if (monsterX >= attackRangeStart && monsterX <= attackRangeEnd) {
+            // 在攻擊範圍內，進行攻擊
+            const attackSpeed = tower.tower.attackSpeed // 獲取攻擊速度
+
+            // 檢查攻擊計時器是否存在，如果不存在，則進行攻擊
+            if (!tower.tower.attackTimer) {
+              data.nowHP -= tower.tower.level * 10
+              console.log('🚀 ~ MonsterGenerator ~ towerList.forEach ~ data.nowHP:', data.nowHP)
+              if (data.nowHP <= 0) {
+                this.monsterList.splice(index, 1)
+              }
+
+              // 設定攻擊計時器，間隔攻擊速度的時間再進行下一次攻擊
+              tower.tower.attackTimer = setInterval(() => {
+                data.nowHP -= tower.tower.level * 10
+                if (data.nowHP <= 0) {
+                  this.monsterList.splice(index, 1)
+                }
+                console.log('🚀 ~ MonsterGenerator ~ towerList.forEach ~ data:', data)
+              }, attackSpeed)
+            }
+          } else {
+            // 不在攻擊範圍內，停止攻擊並清除攻擊計時器
+            if (tower.tower.attackTimer) {
+              clearInterval(tower.tower.attackTimer)
+              tower.tower.attackTimer = null
+            }
+          }
+        })
       }
     })
-
     this.notifyOnMonsterMoved() // 觸發怪物移動事件
   }
 
