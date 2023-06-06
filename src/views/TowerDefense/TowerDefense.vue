@@ -59,8 +59,8 @@ towerList.value = towerGenerator.getTowerList()
 
 //* 設定怪物生成和移動的間隔時間
 const monsterGenerationInterval = setInterval(() => {
-  monsterGenerator.generateMonster(1, 70, 1, 70);
-}, 500);
+  monsterGenerator.generateMonster(1, 30, 1, 30);
+}, 2000);
 
 const monsterMovementInterval = setInterval(() => {
   monsterGenerator.moveMonster(towerList.value);
@@ -68,7 +68,7 @@ const monsterMovementInterval = setInterval(() => {
 
 // -- method -- //
 function createTower(index: number): void {
-  towerGenerator.generateTower(1, index)
+  towerGenerator.generateTower(1, index, 800)
 }
 
 </script>

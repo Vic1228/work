@@ -45,7 +45,7 @@ export abstract class MonsterObserver {
 export class MonsterGenerator {
   private observers: MonsterObserver[] = []
   private monsterFactory: MonsterFlyweightFactory
-  private monsterList: { monster: Monster; location: number }[] = []
+  private monsterList: { monster: Monster; location: number; nowHP: number }[] = []
 
   constructor() {
     this.monsterFactory = new MonsterFlyweightFactory()
@@ -68,13 +68,15 @@ export class MonsterGenerator {
   generateMonster(speed: number, HP: number, location: number, nowHP: number): Monster {
     const monster = this.monsterFactory.createMonster(speed, HP)
     this.monsterList.push({ monster, location, nowHP }) // 將創建的怪物及位置添加到怪物列表中
-    this.notifyOnMonsterCreated(monster, location, nowHP)
+    this.notifyOnMonsterCreated(monster, location)
     return monster
   }
 
   // 怪物移動 / 調用怪物移動通知方法
   // 在 moveMonster 方法中使用攻擊速度
   moveMonster(towerList: any): void {
+    const monstersToRemove: number[] = [] // 要移除的怪物索引
+
     this.monsterList.forEach((data, index) => {
       data.location += data.monster.speed
 
@@ -95,17 +97,13 @@ export class MonsterGenerator {
 
             // 檢查攻擊計時器是否存在，如果不存在，則進行攻擊
             if (!tower.tower.attackTimer) {
-              data.nowHP -= tower.tower.level * 10
-              console.log('🚀 ~ MonsterGenerator ~ towerList.forEach ~ data.nowHP:', data.nowHP)
-              if (data.nowHP <= 0) {
-                this.monsterList.splice(index, 1)
-              }
-
               // 設定攻擊計時器，間隔攻擊速度的時間再進行下一次攻擊
               tower.tower.attackTimer = setInterval(() => {
                 data.nowHP -= tower.tower.level * 10
                 if (data.nowHP <= 0) {
-                  this.monsterList.splice(index, 1)
+                  clearInterval(tower.tower.attackTimer)
+                  tower.tower.attackTimer = null
+                  this.monsterList.splice(index, 1) // 移除怪物
                 }
                 console.log('🚀 ~ MonsterGenerator ~ towerList.forEach ~ data:', data)
               }, attackSpeed)
@@ -120,6 +118,7 @@ export class MonsterGenerator {
         })
       }
     })
+
     this.notifyOnMonsterMoved() // 觸發怪物移動事件
   }
 

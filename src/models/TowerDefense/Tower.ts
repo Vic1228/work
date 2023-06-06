@@ -1,15 +1,13 @@
 // 定義防禦塔介面
 interface Tower {
   level: number
-  startAttackTimer(): void
-  stopAttackTimer(): void
   upgrade(): void
 }
 
 // 具體的防禦塔類別
 class ConcreteTower implements Tower {
   level: number
-  private attackTimer: any | null = null
+  protected attackTimer: any | null = null
 
   constructor(level: number) {
     this.level = level
@@ -17,21 +15,6 @@ class ConcreteTower implements Tower {
 
   upgrade(): void {
     this.level++
-  }
-
-  startAttackTimer(): void {
-    this.attackTimer = setInterval(() => {}, this.getAttackSpeed())
-  }
-
-  stopAttackTimer(): void {
-    if (this.attackTimer) {
-      clearInterval(this.attackTimer)
-      this.attackTimer = null
-    }
-  }
-
-  private getAttackSpeed(): number {
-    return 1000
   }
 }
 
@@ -77,8 +60,8 @@ export class TowerGenerator {
   // 在 TowerGenerator 中生成防禦塔時，傳遞攻擊速度
   generateTower(level: number, location: number, attackSpeed: number): Tower {
     const tower = TowerFactory.createTower(level)
-    tower.attackSpeed = 300 // 設定攻擊速度
-    tower.attackTimer = null // 初始化攻擊計時器為空
+    tower.attackSpeed = attackSpeed
+    tower.attackTimer = null
     this.towerList[location].tower = tower
     this.towerList[location].location = location
     return tower
