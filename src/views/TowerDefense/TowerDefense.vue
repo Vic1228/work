@@ -1,9 +1,10 @@
 <template>
   <div class="layout">
     <div class="td-container">
+      <div style="color:black">初始血量：{{ initialBloodVolume }}</div>
       <div class="monster-way">
-        <div class="monster-body">
-          <img :style="'left:' + dogSpeed + 'px'" src="@/assets/photo/monster.png" alt="">
+        <div v-for="(ele, idx) in monsterList" :key="idx" class="monster-body">
+          <img :style="'left:' + ele.location + 'px'" src="@/assets/photo/monster.png" alt="">
         </div>
       </div>
     </div>
@@ -13,37 +14,40 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { MonsterGenerator, Monster } from '@/models/TowerDefense/Monster';
-const dogSpeed = ref(0)
-dogGOGO()
-function dogGOGO() {
-  const dogGO = setInterval(() => {
-    dogSpeed.value++
-    if (dogSpeed.value > 100) {
-      dogSpeed.value = 0
-      clearInterval(dogGO)
-      dogGOGO()
-    }
-  }, 30)
-}
 
+// -- ref -- //
+const monsterList: any = ref([]) // 怪物清單
+const initialBloodVolume = ref(100) // 初始血量
+
+// -- created -- //
+let monsterGenerationInterval: any;
+let monsterMovementInterval: any;
 const monsterGenerator = new MonsterGenerator()
-
 const monsterObserver = {
-  onMonsterMoved: (monster: Monster) => {
-    console.log(monsterGenerator.getMonsterList())
-    console.log(`怪物 ${monster.location} 移動了`)
+  onMonsterMoved: () => {
+    monsterList.value = monsterGenerator.getMonsterList()
   },
   onMonsterCreated: (monster: Monster) => {
-    console.log(`創建了一個新怪物 ${monster.location}`)
+    console.log("新怪物")
+  },
+  onMonsterExceededThreshold: () => {
+    initialBloodVolume.value--
+    if (initialBloodVolume.value <= 0) {
+      clearInterval(monsterGenerationInterval);
+      clearInterval(monsterMovementInterval);
+    }
   }
 }
-
 monsterGenerator.addObserver(monsterObserver)
 
-const monster = monsterGenerator.generateMonster(1, 100)
-const monster2 = monsterGenerator.generateMonster(1, 100)
-monsterGenerator.moveMonster(monster, 16)
-monsterGenerator.moveMonster(monster2, 9)
+monsterGenerationInterval = setInterval(() => {
+  monsterGenerator.generateMonster(1, 100, 1)
+}, 500)
+
+monsterMovementInterval = setInterval(() => {
+  monsterGenerator.moveMonster()
+}, 10)
+
 
 
 
