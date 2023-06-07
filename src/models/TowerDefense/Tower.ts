@@ -124,10 +124,17 @@ export abstract class TowerObserver {
 // 防禦塔生成器管理器
 export class TowerGenerator {
   private observers: TowerObserver[] = []
-  private towerList: { tower: Tower | null; location: number }[] = Array.from(
-    { length: 6 },
-    () => ({ tower: null, location: 0 })
-  )
+  private towerList: { tower: Tower | null; location: number }[]
+
+  private mapWidth: number
+  private towerCount: number
+
+  constructor({ mapWidth, towerCount }: { mapWidth: number; towerCount: number }) {
+    this.mapWidth = mapWidth
+    this.towerCount = towerCount
+
+    this.towerList = Array.from({ length: this.towerCount }, () => ({ tower: null, location: 0 }))
+  }
 
   // 新增觀察防禦塔
   addObserver(observer: TowerObserver): void {
@@ -160,8 +167,9 @@ export class TowerGenerator {
         tower.tower.attackTimer = true
         monsterList.forEach((monster, monsterIndex) => {
           const monsterX = monster.location
-          const attackRangeStart = towerIndex * 100 // 計算攻擊範圍的起始位置
-          const attackRangeEnd = (towerIndex + 1) * 100 // 計算攻擊範圍的結束位置
+          const attackRange = this.mapWidth / this.towerCount
+          const attackRangeStart = towerIndex * attackRange // 計算攻擊範圍的起始位置
+          const attackRangeEnd = (towerIndex + 1) * attackRange // 計算攻擊範圍的結束位置
           if (monsterX >= attackRangeStart && monsterX <= attackRangeEnd) {
             const attack = tower.tower.getAttack()
             const monsterGenerator = MonsterGenerator.GetInstance()

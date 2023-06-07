@@ -1,6 +1,6 @@
 <template>
   <div class="layout">
-    <div class="td-container">
+    <div class="td-container" ref="mapWidth">
       <div style="padding:15px;">
         <div style="color:black;font-weight: 900;">血量：{{ initialBloodVolume }}</div>
         <div style="color:black;font-weight: 900;">金幣：{{ initialMoney }}</div>
@@ -30,68 +30,77 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { MonsterGenerator, Monster, MonsterObserver } from '@/models/TowerDefense/Monster';
 import { TowerGenerator, TowerObserver, UpdateFactory } from '@/models/TowerDefense/Tower';
 
 // -- ref -- //
+const mapWidth = ref<any>(null) // 地圖寬度
+const towerCount = ref<number>(6) // 防禦塔數量
 const monsterList = ref<{ monster: Monster; location: number }[]>([]); // 怪物清單
 const towerList = ref<any>([]); // 防禦塔清單
 const initialBloodVolume = ref(100); // 初始血量
 const initialMoney = ref<number>(120) // 初始金錢
 const selectedTower = ref<number>(-1) // 選擇的防禦塔
 const currentLevel = ref<number>(1) // 現在關卡
-const waveCount = ref<number>(70) // 每個關卡出幾次怪
+const waveCount = ref<number>(50) // 每個關卡出幾次怪
 
 // -- created -- //
-let monsterGenerationInterval: any;
-let monsterMovementInterval: any;
-//* 創建怪物觀察者
-const monsterObserver: MonsterObserver = {
-  // 怪物移動
-  onMonsterMoved() {
-    monsterList.value = monsterGenerator.getMonsterList();
-    towerGenerator.attackTower(towerList.value, monsterList.value)
-  },
-  // 怪物創造
-  onMonsterCreated() {
-    monsterList.value = monsterGenerator.getMonsterList();
-  },
-  // 怪物超出範圍
-  onMonsterExceededThreshold() {
-    initialBloodVolume.value--;
-    if (initialBloodVolume.value <= 0) {
-      clearInterval(monsterGenerationInterval);
-      clearInterval(monsterMovementInterval);
+let monsterGenerationInterval: any; // 怪物生成
+let monsterMovementInterval: any; // 怪物移動
+let monsterGenerator: MonsterGenerator //怪物管理器
+let towerGenerator: TowerGenerator //防禦塔管理器
+
+
+// -- mounted -- //
+onMounted(() => {
+  //* 創建怪物觀察者
+  const monsterObserver: MonsterObserver = {
+    // 怪物移動
+    onMonsterMoved() {
+      monsterList.value = monsterGenerator.getMonsterList();
+      towerGenerator.attackTower(towerList.value, monsterList.value)
+    },
+    // 怪物創造
+    onMonsterCreated() {
+      monsterList.value = monsterGenerator.getMonsterList();
+    },
+    // 怪物超出範圍
+    onMonsterExceededThreshold() {
+      initialBloodVolume.value--;
+      if (initialBloodVolume.value <= 0) {
+        clearInterval(monsterGenerationInterval);
+        clearInterval(monsterMovementInterval);
+      }
+    },
+    // 怪物遭到擊殺
+    onMonsterKilled() {
+      initialMoney.value += 5
     }
-  },
-  // 怪物遭到擊殺
-  onMonsterKilled() {
-    initialMoney.value += 1
-  }
-};
-//* 創建防禦塔觀察者
-const towerObserver: TowerObserver = {
-  // 防禦塔進行攻擊
-  OnAttack(towerIndex: number) {
-    // 攻擊修改class觸發攻擊特效
-    towerList.value[towerIndex].attack = "tower-attack"
-    setTimeout(() => {
-      towerList.value[towerIndex].attack = ""
-    }, towerList.value[towerIndex].tower.attackSpeed * 0.8);
-  },
-};
+  };
+  //* 創建防禦塔觀察者
+  const towerObserver: TowerObserver = {
+    // 防禦塔進行攻擊
+    OnAttack(towerIndex: number) {
+      // 攻擊修改class觸發攻擊特效
+      towerList.value[towerIndex].attack = "tower-attack"
+      setTimeout(() => {
+        towerList.value[towerIndex].attack = ""
+      }, towerList.value[towerIndex].tower.attackSpeed * 0.8);
+    },
+  };
 
-//* 創建怪物生成器
-const monsterGenerator = MonsterGenerator.GetInstance();
-monsterGenerator.addObserver(monsterObserver); // 新增觀察者
+  //* 創建怪物生成器
+  monsterGenerator = MonsterGenerator.GetInstance();
+  monsterGenerator.addObserver(monsterObserver); // 新增觀察者
 
-//* 創建防禦塔生成器
-const towerGenerator = new TowerGenerator()
-towerGenerator.addObserver(towerObserver); // 新增觀察者
-towerList.value = towerGenerator.getTowerList()
+  //* 創建防禦塔生成器
+  towerGenerator = new TowerGenerator({ mapWidth: mapWidth.value.offsetWidth, towerCount: towerCount.value })
+  towerGenerator.addObserver(towerObserver); // 新增觀察者
+  towerList.value = towerGenerator.getTowerList()
 
-startGame(currentLevel.value)
+  startGame(currentLevel.value)
+})
 
 // -- method -- //
 //* 開始遊戲
@@ -99,18 +108,19 @@ function startGame(stage: number) {
   let numberOfMonster: number = 0
   //* 設定怪物生成和移動的間隔時間
   monsterGenerationInterval = setInterval(() => {
-    monsterGenerator.generateMonster({ speed: stage / 2, HP: stage * 3, location: 1, nowHP: stage * 3 });
+    monsterGenerator.generateMonster({ speed: 1, HP: stage * 3, location: 1, nowHP: stage * 3 });
     numberOfMonster++
     if (numberOfMonster >= waveCount.value) {
       clearInterval(monsterGenerationInterval);
       currentLevel.value++
+      waveCount.value = currentLevel.value * waveCount.value
       startGame(currentLevel.value)
     }
-  }, 1000);
+  }, 1000 / stage);
 
   monsterMovementInterval = setInterval(() => {
     monsterGenerator.moveMonster();
-  }, 10);
+  }, 20);
 }
 
 //* 建造防禦塔
