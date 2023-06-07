@@ -1,7 +1,11 @@
 <template>
   <div class="layout">
     <div class="td-container">
-      <div style="color:black">血量：{{ initialBloodVolume }}</div>
+      <div style="padding:15px;">
+        <div style="color:black;font-weight: 900;">血量：{{ initialBloodVolume }}</div>
+        <div style="color:black;font-weight: 900;">金幣：{{ initialMoney }}</div>
+        <div style="color:black;font-weight: 900;">關卡：{{ currentLevel }}</div>
+      </div>
       <div class="monster-way">
         <div v-for="(ele, idx) in monsterList" :key="idx" class="monster-body">
           <img :style="'left:' + ele.location + 'px'" src="@/assets/photo/monster.png" alt="">
@@ -9,9 +13,17 @@
       </div>
       <div class="tower-space">
         <div v-for="(ele, idx) in towerList" :key="idx" class="tower-body">
-          <img v-if="ele.tower" src="@/assets/photo/cat.png" alt="">
+          <div @click="chooseTower(idx)" v-if="ele.tower" :class="ele.attack">
+            <img class="" src="@/assets/photo/cat.png" alt="">
+          </div>
           <div v-else @click="createTower(idx)" class="tower-noDisplay"></div>
+          <div class="tower-select" v-show="idx == selectedTower">已選擇</div>
         </div>
+      </div>
+      <div style="display:flex;justify-content: space-around;margin-top:40px;">
+        <button @click="updateTower('UpdateLevelTowerDecorator')">升級($100)</button>
+        <button @click="updateTower('AttackPowerTowerDecorator')">增加攻擊力($10)</button>
+        <button @click="updateTower('AttackSpeedTowerDecorator')">增加攻擊速度($10)</button>
       </div>
     </div>
   </div>
@@ -20,19 +32,26 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { MonsterGenerator, Monster, MonsterObserver } from '@/models/TowerDefense/Monster';
-import { TowerGenerator } from '@/models/TowerDefense/Tower';
+import { TowerGenerator, TowerObserver, UpdateFactory } from '@/models/TowerDefense/Tower';
 
 // -- ref -- //
 const monsterList = ref<{ monster: Monster; location: number }[]>([]); // 怪物清單
 const towerList = ref<any>([]); // 防禦塔清單
 const initialBloodVolume = ref(100); // 初始血量
+const initialMoney = ref<number>(120) // 初始金錢
+const selectedTower = ref<number>(-1) // 選擇的防禦塔
+const currentLevel = ref<number>(1) // 現在關卡
+const waveCount = ref<number>(70) // 每個關卡出幾次怪
 
 // -- created -- //
+let monsterGenerationInterval: any;
+let monsterMovementInterval: any;
 //* 創建怪物觀察者
 const monsterObserver: MonsterObserver = {
   // 怪物移動
   onMonsterMoved() {
     monsterList.value = monsterGenerator.getMonsterList();
+    towerGenerator.attackTower(towerList.value, monsterList.value)
   },
   // 怪物創造
   onMonsterCreated() {
@@ -46,29 +65,81 @@ const monsterObserver: MonsterObserver = {
       clearInterval(monsterMovementInterval);
     }
   },
+  // 怪物遭到擊殺
+  onMonsterKilled() {
+    initialMoney.value += 1
+  }
+};
+//* 創建防禦塔觀察者
+const towerObserver: TowerObserver = {
+  // 防禦塔進行攻擊
+  OnAttack(towerIndex: number) {
+    // 攻擊修改class觸發攻擊特效
+    towerList.value[towerIndex].attack = "tower-attack"
+    setTimeout(() => {
+      towerList.value[towerIndex].attack = ""
+    }, towerList.value[towerIndex].tower.attackSpeed * 0.8);
+  },
 };
 
-
 //* 創建怪物生成器
-const monsterGenerator = new MonsterGenerator();
-monsterGenerator.addObserver(monsterObserver);
+const monsterGenerator = MonsterGenerator.GetInstance();
+monsterGenerator.addObserver(monsterObserver); // 新增觀察者
 
 //* 創建防禦塔生成器
 const towerGenerator = new TowerGenerator()
+towerGenerator.addObserver(towerObserver); // 新增觀察者
 towerList.value = towerGenerator.getTowerList()
 
-//* 設定怪物生成和移動的間隔時間
-const monsterGenerationInterval = setInterval(() => {
-  monsterGenerator.generateMonster(1, 30, 1, 30);
-}, 2000);
-
-const monsterMovementInterval = setInterval(() => {
-  monsterGenerator.moveMonster(towerList.value);
-}, 10);
+startGame(currentLevel.value)
 
 // -- method -- //
+//* 開始遊戲
+function startGame(stage: number) {
+  let numberOfMonster: number = 0
+  //* 設定怪物生成和移動的間隔時間
+  monsterGenerationInterval = setInterval(() => {
+    monsterGenerator.generateMonster({ speed: stage / 2, HP: stage * 3, location: 1, nowHP: stage * 3 });
+    numberOfMonster++
+    if (numberOfMonster >= waveCount.value) {
+      clearInterval(monsterGenerationInterval);
+      currentLevel.value++
+      startGame(currentLevel.value)
+    }
+  }, 1000);
+
+  monsterMovementInterval = setInterval(() => {
+    monsterGenerator.moveMonster();
+  }, 10);
+}
+
+//* 建造防禦塔
 function createTower(index: number): void {
+  if (initialMoney.value < 100) {
+    return;
+  }
+  initialMoney.value -= 100;
   towerGenerator.generateTower(1, index, 800)
+}
+
+//* 升級防禦塔
+function updateTower(methodName: string): void {
+  if (selectedTower.value == -1) {
+    return
+  }
+  const updateFactory = new UpdateFactory(methodName, towerList.value[selectedTower.value].tower)
+  const result = updateFactory.getResult()
+  if (initialMoney.value < result.getUpdateMoney()) {
+    return
+  }
+  result.upgrade()
+  initialMoney.value -= result.getUpdateMoney()
+}
+
+
+// 選擇防禦塔
+function chooseTower(index: number): void {
+  selectedTower.value = index
 }
 
 </script>
@@ -79,15 +150,14 @@ function createTower(index: number): void {
 .td-container {
   width: 100%;
   height: 100%;
-  background-color: rgb(230, 230, 230);
+  background-image: url("@/assets/photo/backgroung.png");
 
   .monster-way {
     display: flex;
-    ;
-    margin-top: 10%;
-    border-bottom: solid 1px black;
-    border-top: solid 1px black;
-    height: 10%;
+    margin-top: 5%;
+    background-image: url("@/assets/photo/wayy.jpg");
+    height: 15%;
+    padding: 10px 0;
 
     .monster-body {
       position: relative;
@@ -104,18 +174,116 @@ function createTower(index: number): void {
     display: flex;
 
     .tower-body {
+      position: relative;
       width: calc(100%/6);
 
       .tower-noDisplay {
-        border: 1px solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
         height: 100%;
-        min-height: 100px;
+        min-height: 106px;
+        padding: 20px;
       }
 
+      .tower-noDisplay::before {
+        content: "+";
+        font-size: 30px;
+        font-weight: bold;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .tower-noDisplay::after {
+        content: "$100";
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        border: 3px solid;
+        border-radius: 10px;
+        animation: shimmer 2s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          border-color: #C0C0C0;
+          box-shadow: 0 0 5px #C0C0C0;
+        }
+
+        50% {
+          border-color: #9e9797;
+          box-shadow: 0 0 10px #808080;
+        }
+
+        100% {
+          border-color: #C0C0C0;
+          box-shadow: 0 0 5px #C0C0C0;
+        }
+      }
+
+
       img {
-        width: 100%
+        max-height: 100px;
+        width: 100%;
+        position: relative;
+        animation: tower-animation 1s ease-out forwards;
+      }
+
+      @keyframes tower-animation {
+        0% {
+          transform: scale(0);
+          opacity: 1;
+        }
+
+        50% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+
+        70% {
+          transform: scale(1.1);
+        }
+
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+
+
+      .tower-attack {
+        position: relative;
+        animation: shake 0.5s alternate;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translateY(0px);
+        }
+
+        50% {
+          transform: translateY(-30px);
+        }
+
+        100% {
+          transform: translateY(0px);
+        }
       }
     }
+
+    .tower-select {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
   }
 
 }
