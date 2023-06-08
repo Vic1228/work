@@ -18,7 +18,7 @@ class ConcreteTower implements Tower {
 
   constructor(level: number, attackSpeed: number) {
     this.level = level
-    this.attackSpeed = attackSpeed
+    this.attackSpeed = attackSpeed - level * 10
   }
 
   getAttack(): number {
@@ -77,7 +77,7 @@ class UpdateLevelTower extends TowerStrategy {
 //* 增加攻擊力
 class AttackPowerTower extends TowerStrategy {
   upgrade(): void {
-    this.tower.attackPower += 2
+    this.tower.attackPower += 1
   }
   getUpdateMoney(): number {
     return 10
@@ -86,7 +86,7 @@ class AttackPowerTower extends TowerStrategy {
 //* 增加攻擊速度
 class AttackSpeedTower extends TowerStrategy {
   upgrade(): void {
-    this.tower.attackSpeed -= 10
+    this.tower.attackSpeed -= 0.5
   }
   getUpdateMoney(): number {
     return 10
@@ -95,7 +95,7 @@ class AttackSpeedTower extends TowerStrategy {
 
 //* 升級工廠
 export class UpdateFactory {
-  public strategy: any
+  private strategy: any
 
   constructor(strategyName: string, tower: Tower) {
     switch (strategyName) {
@@ -116,15 +116,25 @@ export class UpdateFactory {
   }
 }
 
-// 抽象觀察者接口
+//* 抽象觀察者接口
 export abstract class TowerObserver {
   abstract OnAttack(towerIndex: number): void
 }
 
-// 防禦塔生成器管理器
+//* 防禦塔生成器管理器
 export class TowerGenerator {
   private observers: TowerObserver[] = []
   private towerList: { tower: Tower | null; location: number }[]
+  private bulletList: {
+    id: number
+    bulletSpeed: number
+    bulletDamage: number
+    targetMonsterIndex: number
+    bulletPosition: {
+      x: number
+      y: number
+    }
+  }[]
 
   private mapWidth: number
   private towerCount: number
@@ -132,7 +142,7 @@ export class TowerGenerator {
   constructor({ mapWidth, towerCount }: { mapWidth: number; towerCount: number }) {
     this.mapWidth = mapWidth
     this.towerCount = towerCount
-
+    this.bulletList = []
     this.towerList = Array.from({ length: this.towerCount }, () => ({ tower: null, location: 0 }))
   }
 
@@ -165,18 +175,27 @@ export class TowerGenerator {
       }
       if (!tower.tower.attackTimer) {
         tower.tower.attackTimer = true
-        monsterList.forEach((monster, monsterIndex) => {
+        for (const monsterIndex in monsterList) {
+          const monster = monsterList[monsterIndex]
           const monsterX = monster.location
           const attackRange = this.mapWidth / this.towerCount
-          const attackRangeStart = towerIndex * attackRange // 計算攻擊範圍的起始位置
-          const attackRangeEnd = (towerIndex + 1) * attackRange // 計算攻擊範圍的結束位置
+          const attackRangeStart = towerIndex * attackRange - 50 // 計算攻擊範圍的起始位置
+          const attackRangeEnd = (towerIndex + 1) * attackRange + 50 // 計算攻擊範圍的結束位置
           if (monsterX >= attackRangeStart && monsterX <= attackRangeEnd) {
-            const attack = tower.tower.getAttack()
-            const monsterGenerator = MonsterGenerator.GetInstance()
-            monsterGenerator.takeDamage(attack, monsterIndex)
+            this.bulletList.push({
+              id: Date.now(),
+              bulletSpeed: (1 / tower.tower.attackSpeed) * 1500,
+              bulletDamage: tower.tower.getAttack(),
+              targetMonsterIndex: Number(monsterIndex),
+              bulletPosition: {
+                x: attackRange * towerIndex + attackRange / 2, // 子彈的起始 x 座標
+                y: 200 // 子彈的起始 y 座標
+              }
+            })
             this.notifyOnAttack(towerIndex)
+            break // 在 push 完子彈後立即退出迴圈
           }
-        })
+        }
         setTimeout(() => {
           tower.tower.attackTimer = false
         }, tower.tower.attackSpeed)
@@ -184,9 +203,52 @@ export class TowerGenerator {
     })
   }
 
+  // 更新子彈位置以及觸發攻擊
+  moveBullets(monsterList: any[]): void {
+    this.bulletList.forEach((bullet: any, index: number) => {
+      const targetMonster = monsterList[bullet.targetMonsterIndex]
+      if (targetMonster) {
+        const bulletSpeed = bullet.bulletSpeed
+        const bulletDamage = bullet.bulletDamage
+        const bulletStartX = bullet.bulletPosition.x
+        const bulletStartY = bullet.bulletPosition.y
+        const bulletTargetX = targetMonster.location
+        const bulletTargetY = 170
+
+        // 計算子彈的移動路線
+        const dx = bulletTargetX - bulletStartX
+        const dy = bulletTargetY - bulletStartY
+        const distance = Math.sqrt(dx * dx + dy * dy)
+        const vx = (dx / distance) * bulletSpeed
+        const vy = (dy / distance) * bulletSpeed
+
+        // 更新子彈的座標
+        bullet.bulletPosition.x += vx
+        bullet.bulletPosition.y += vy
+
+        // 判斷子彈是否到達目標座標
+        if (
+          Math.abs(bullet.bulletPosition.x - bulletTargetX) < bulletSpeed &&
+          Math.abs(bullet.bulletPosition.y - bulletTargetY) < bulletSpeed
+        ) {
+          const monsterGenerator = MonsterGenerator.GetInstance()
+          monsterGenerator.takeDamage(bulletDamage, bullet.targetMonsterIndex)
+          this.bulletList.splice(index, 1)
+        }
+      } else {
+        this.bulletList.splice(index, 1)
+      }
+    })
+  }
+
   // 獲取當前防禦塔列表
   getTowerList(): { tower: Tower | null; location: number }[] {
-    return this.towerList.slice()
+    return this.towerList
+  }
+
+  // 獲取當前子彈列表
+  getBulletList(): { bulletSpeed: number; bulletDamage: number }[] {
+    return this.bulletList
   }
 
   // 發出通知現在防禦塔正在進行攻擊

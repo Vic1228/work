@@ -1,10 +1,10 @@
-// 抽象怪物
+//* 抽象怪物
 export abstract class Monster {
   abstract speed: number
   abstract HP: number
 }
 
-// 具體的怪物類
+//* 具體的怪物類
 class ConcreteMonster extends Monster {
   speed: number
   HP: number
@@ -16,7 +16,7 @@ class ConcreteMonster extends Monster {
   }
 }
 
-// 怪物享元工廠
+//* 怪物享元工廠
 class MonsterFlyweightFactory {
   private monsters: { [key: string]: Monster } = {}
 
@@ -29,7 +29,7 @@ class MonsterFlyweightFactory {
   }
 }
 
-// 抽象觀察者接口
+//* 抽象觀察者
 export abstract class MonsterObserver {
   abstract onMonsterCreated(monster: Monster, location: number): void // 怪物創建時觸發
   abstract onMonsterMoved(): void // 怪物移動時觸發
@@ -37,7 +37,7 @@ export abstract class MonsterObserver {
   abstract onMonsterKilled(): void // 怪物被擊殺時通知
 }
 
-// 怪物生成器管理器
+//* 怪物生成器管理器
 export class MonsterGenerator {
   private static instance: MonsterGenerator
   private observers: MonsterObserver[] = []
@@ -80,19 +80,19 @@ export class MonsterGenerator {
   }
 
   // 怪物移動 / 調用怪物移動通知方法
-  // 在 moveMonster 方法中使用攻擊速度
-  moveMonster(): void {
+  moveMonster(mapWidth: number): void {
     this.monsterList.forEach((data, index) => {
       data.location += data.monster.speed
-      if (data.location > 570) {
-        // 超過範圍，執行相應操作
-        this.handleMonsterExceededThreshold(data.monster, index)
+      if (data.location > mapWidth) {
+        // 超過範圍
+        this.handleMonsterExceededThreshold(index)
       }
     })
 
     this.notifyOnMonsterMoved() // 觸發怪物移動事件
   }
 
+  // 怪物受到攻擊
   takeDamage(damage: number, index: number): void {
     if (!this.monsterList[index]) {
       return
@@ -105,7 +105,7 @@ export class MonsterGenerator {
   }
 
   // 處理超過範圍的怪物
-  private handleMonsterExceededThreshold(monster: Monster, index: number): void {
+  private handleMonsterExceededThreshold(index: number): void {
     this.monsterList.splice(index, 1)
     this.notifyOnMonsterExceededThreshold()
   }
@@ -135,7 +135,7 @@ export class MonsterGenerator {
     return this.monsterList.slice()
   }
 
-  // 確保各處取得的視同一個怪物管理器
+  // 確保各處取得同一個怪物管理器
   static GetInstance(): MonsterGenerator {
     if (MonsterGenerator.instance == null) {
       MonsterGenerator.instance = new MonsterGenerator()
